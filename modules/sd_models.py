@@ -18,6 +18,8 @@ from modules import shared, modelloader, devices, script_callbacks, sd_vae, sd_d
 from modules.paths import models_path
 from modules.sd_hijack_inpainting import do_inpainting_hijack, should_hijack_inpainting
 
+import tomesd
+
 model_dir = "Stable-diffusion"
 model_path = os.path.abspath(os.path.join(models_path, model_dir))
 
@@ -287,6 +289,8 @@ def load_model_weights(model, checkpoint_info: CheckpointInfo):
     vae_file, vae_source = sd_vae.resolve_vae(checkpoint_info.filename)
     sd_vae.load_vae(model, vae_file, vae_source)
 
+    if shared.cmd_opts.tome is not None:
+        tomesd.apply_patch(model, ratio=float(shared.cmd_opts.tome))
 
 def enable_midas_autodownload():
     """
